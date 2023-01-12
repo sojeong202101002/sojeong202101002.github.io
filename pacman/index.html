@@ -4,7 +4,7 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		<div>Teachable Machine Image Model - p5.js and ml5.js</div>
+		<div>Teachable Machine Audio Model - p5.js and ml5.js</div>
 		
 		<div id="pacman"></div>
 		
@@ -44,69 +44,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
 <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 <script type="text/javascript">
-  // Classifier Variable
-  let classifier;
-  // Model URL
-  let audioModelURL = './my-audio-model/';
-  
-  // Video
-  let video;
-  let flippedVideo;
-  // To store the classification
-  let label = "";
+  // Global variable to store the classifier
+let classifier;
 
-  // Load the model first
-  function preload() {
-    classifier = ml5.imageClassifier(audioModelURL + 'model.json');
+// Label
+let label = 'listening...';
+
+// Teachable Machine model URL:
+let soundModel = 'https://sojeong202101002.github.io/pacman/my-audio-model/';
+
+
+function preload() {
+  // Load the model
+  classifier = ml5.soundClassifier(soundModel + 'model.json');
+}
+
+function setup() {
+  createCanvas(320, 240);
+  // Start classifying
+  // The sound model will continuously listen to the microphone
+  classifier.classify(gotResult);
+}
+
+function draw() {
+  background(0);
+  // Draw the label in the canvas
+  fill(255);
+  textSize(32);
+  textAlign(CENTER, CENTER);
+  text(label, width / 2, height / 2);
+}
+
+
+// The model recognizing a sound will trigger this event
+function gotResult(error, results) {
+  if (error) {
+    console.error(error);
+    return;
   }
-
-  function setup() {
-    createCanvas(320, 260);
-    // Create the video
-    video = createCapture(VIDEO);
-    video.size(320, 240);
-    video.hide();
-
-    flippedVideo = ml5.flipImage(video);
-    // Start classifying
-    classifyVideo();
-  }
-
-  function draw() {
-    background(0);
-    // Draw the video
-    image(flippedVideo, 0, 0);
-
-    // Draw the label
-    fill(255);
-    textSize(16);
-    textAlign(CENTER);
-    text(label, width / 2, height - 4);
-  }
-
-  // Get a prediction for the current video frame
-  function classifyVideo() {
-    flippedVideo = ml5.flipImage(video)
-    classifier.classify(flippedVideo, gotResult);
-    flippedVideo.remove();
-
-  }
-
-  // When we get a result
-  function gotResult(error, results) {
-    // If there is an error
-    if (error) {
-      console.error(error);
-      return;
-    }
-    // The results are in an array ordered by confidence.
-    // console.log(results[0]);
-    label = results[0].label;
+  // The results are in an array ordered by confidence.
+  //console.log(results[0]);
+  label = results[0].label;
 	$.publish("/vision", label);
-	  
-    // Classifiy again!
-    classifyVideo();
-  }
+}
 </script>
 	</body>
 </html>
