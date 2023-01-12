@@ -47,35 +47,35 @@
   // Classifier Variable
   let classifier;
   // Model URL
-  let imageModelURL = './my-audio-model/';
+  let audioModelURL = './my-audio-model/';
   
-  // Video
-  let video;
-  let flippedVideo;
+  // audio
+  let audio;
+  let flippedaudio;
   // To store the classification
   let label = "";
 
   // Load the model first
   function preload() {
-    classifier = ml5.imageClassifier(imageModelURL + 'model.json');
+    classifier = ml5.audioClassifier(audioModelURL + 'model.json');
   }
 
   function setup() {
     createCanvas(320, 260);
-    // Create the video
-    video = createCapture(VIDEO);
-    video.size(320, 240);
-    video.hide();
+    // Create the audio
+    audio = createCapture(audio);
+    audio.size(320, 240);
+    audio.hide();
 
-    flippedVideo = ml5.flipImage(video);
+    flippedaudio = ml5.flipaudio(audio);
     // Start classifying
-    classifyVideo();
+    classifyaudio();
   }
 
   function draw() {
     background(0);
-    // Draw the video
-    image(flippedVideo, 0, 0);
+    // Draw the audio
+    audio(flippedaudio, 0, 0);
 
     // Draw the label
     fill(255);
@@ -84,11 +84,11 @@
     text(label, width / 2, height - 4);
   }
 
-  // Get a prediction for the current video frame
-  function classifyVideo() {
-    flippedVideo = ml5.flipImage(video)
-    classifier.classify(flippedVideo, gotResult);
-    flippedVideo.remove();
+  // Get a prediction for the current audio frame
+  function classifyaudio() {
+    flippedaudio = ml5.flipaudio(audio)
+    classifier.classify(flippedaudio, gotResult);
+    flippedaudio.remove();
 
   }
 
@@ -105,7 +105,7 @@
 	$.publish("/vision", label);
 	  
     // Classifiy again!
-    classifyVideo();
+    classifyaudio();
   }
 </script>
 	</body>
