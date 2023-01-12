@@ -1,1 +1,1 @@
-# sojeong202101002.gitub.io
+# sojeong202101002.github.io
